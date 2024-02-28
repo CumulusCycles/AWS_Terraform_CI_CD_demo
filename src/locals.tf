@@ -1,5 +1,5 @@
 locals {
-  availability_zones = ["us-east-1a", "us-east-1b"]
+  availability_zones = ["eu-west-1a", "eu-west-1b"]
 
   vpc_cidr             = "10.0.0.0/16"
   public_subnet_cidrs  = ["10.0.0.0/24", "10.0.1.0/24"]
