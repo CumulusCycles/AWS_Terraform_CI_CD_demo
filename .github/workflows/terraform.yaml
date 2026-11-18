@@ -17,12 +17,12 @@ jobs:
         working-directory: src
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.0.1
+          terraform_version: 1.17.1
           terraform_wrapper: false
 
       - name: Terraform Format
