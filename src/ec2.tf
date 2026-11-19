@@ -23,47 +23,18 @@ data "aws_ami" "amazon_linux_2023" {
   }
 }
 
-resource "aws_security_group" "private_ec2" {
-  name        = "private-ec2"
-  description = "Egress-only security group for the private EC2 instance"
-  vpc_id      = module.vpc-infra.cc_vpc_id
+module "private_ec2" {
+  source = "./modules/ec2"
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name    = "private-ec2"
-    Project = "CC TF Demo"
-  }
-}
-
-resource "aws_instance" "private" {
-  ami                         = data.aws_ami.amazon_linux_2023.id
-  instance_type               = "t3.micro"
-  subnet_id                   = module.vpc-infra.cc_private_subnets[0].id
-  vpc_security_group_ids      = [aws_security_group.private_ec2.id]
-  associate_public_ip_address = false
-
-  metadata_options {
-    http_endpoint = "enabled"
-    http_tokens   = "required"
-  }
-
-  root_block_device {
-    encrypted = true
-  }
-
-  tags = {
-    Name    = "private-ec2"
-    Project = "CC TF Demo"
-  }
+  ami_id        = data.aws_ami.amazon_linux_2023.id
+  vpc_id        = module.vpc-infra.cc_vpc_id
+  subnet_id     = module.vpc-infra.cc_private_subnets[0].id
+  instance_type = "t3.micro"
+  name          = "private-ec2"
+  project       = "CC TF Demo"
 }
 
 output "private_ec2_instance_id" {
   description = "ID of the EC2 instance in the first private subnet"
-  value       = aws_instance.private.id
+  value       = module.private_ec2.instance_id
 }
